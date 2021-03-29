@@ -81,8 +81,7 @@
         import random
         from browser import document, ajax
 
-        #Set up general criteria for our board
-        num_balls = document['artist-input']
+        num_balls = document['n_balls']
         rows= document['rows']
         columns = document['columns']
         center_col = round(columns/2)
@@ -125,7 +124,7 @@
                     bingo_board[row][column]=next_entry
             prev_col.clear()
         print("Your Bingo Board")
-        print(bingo_board)
+        document['bingo']=bingo_board
     </script>
 
 </body>
