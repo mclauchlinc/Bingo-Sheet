@@ -83,22 +83,7 @@
 
         document['bingo'].text = 'Loading...'
 
-        num_balls = document['n_balls']
-        rows= document['rows']
-        columns = document['columns']
-        center_col = round(columns/2)
-        center_row = round(rows/2)
-        low=[]
-        high=[]
-        low.append(1)
-        for i in range(columns-1):
-            low.append((i+1)*num_balls/columns +1)
-            high.append((i+1)*num_balls/columns)
-        high.append(num_balls)
-        for i in range(columns):
-            print("low", i,low[i])
-            print("high",i,high[i])
-            print("diff",high[i]-low[i]+1)
+        
         
         def rand_bin(col,prev):
             dup=True
@@ -114,19 +99,37 @@
                 if copy == 0:
                     dup = False
             return test
-        bingo_board=np.zeros((rows,columns))
-        for column in range(columns):
-            prev_col=[]
-            for row in range(rows):
-                if row == center_row and column == center_col:
-                    bingo_board[row][column]="0.0"
-                else:
-                    next_entry=rand_bin(column,prev_col)
-                    prev_col.append(next_entry)
-                    bingo_board[row][column]=next_entry
-            prev_col.clear()
-        print("Your Bingo Board")
-        document['bingo'].text=bingo_board
+
+        def get_board(e):
+            req= ajax.ajax()
+            num_balls = document['n_balls']
+            rows= document['rows']
+            columns = document['columns']
+            center_col = round(columns/2)
+            center_row = round(rows/2)
+            low=[]
+            high=[]
+            low.append(1)
+            for i in range(columns-1):
+                low.append((i+1)*num_balls/columns +1)
+                high.append((i+1)*num_balls/columns)
+            high.append(num_balls)
+
+            bingo_board=np.zeros((rows,columns))
+            for column in range(columns):
+                prev_col=[]
+                for row in range(rows):
+                    if row == center_row and column == center_col:
+                        bingo_board[row][column]="0.0"
+                    else:
+                        next_entry=rand_bin(column,prev_col)
+                        prev_col.append(next_entry)
+                        bingo_board[row][column]=next_entry
+                prev_col.clear()
+            print("Your Bingo Board")
+            document['bingo'].text=bingo_board
+
+        document['bingo-btn'].bind('click',get_board)
     </script>
 
 </body>
