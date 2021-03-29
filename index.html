@@ -81,6 +81,8 @@
         import random
         from browser import document, ajax
 
+        document['bingo'].text = 'Loading...'
+
         num_balls = document['n_balls']
         rows= document['rows']
         columns = document['columns']
@@ -124,7 +126,7 @@
                     bingo_board[row][column]=next_entry
             prev_col.clear()
         print("Your Bingo Board")
-        document['bingo']=bingo_board
+        document['bingo'].text=bingo_board
     </script>
 
 </body>
