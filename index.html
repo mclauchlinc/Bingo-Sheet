@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.8.8/brython.js" integrity="sha256-rA89wPrTJJQFWJaZveKW8jpdmC3t5F9rRkPyBjz8G04=" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.8.8/brython_stdlib.js" integrity="sha256-Gnrw9tIjrsXcZSCh/wos5Jrpn0bNVNFJuNJI9d71TDs=" crossorigin="anonymous"></script>
+
+    <style>
+        * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 25px;
+            padding: 30px;
+            line-height: 1.6;
+            background-image: url('./background.png');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%; 
+      
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 1px #ccc solid;
+      }
+
+      h2 {
+        margin-top: 20px;
+      }
+
+      button {
+        cursor: pointer;
+        display: block;
+        background: #333;
+        color: #fff;
+        border: 0;
+        border-radius: 5px;
+        padding: 10px 20px;
+        margin: 20px 0;
+      }
+
+      input[type="text"] {
+        border: 1px #ccc solid;
+        width: 300px;
+        padding: 4px;
+        height: 35px;
+        margin-top: 20px;
+      }
+
+      .card {
+        margin: 20px 0;
+        border: #ccc 1px solid;
+        padding: 20px;
+      }
+
+    </style>
+    <title>Custom Bingo Sheet</title>
+</head>
+<body onload="brython()">
+    <h1>Custom Bingo Sheet</h1>
+
+    <input type="number" id="n_balls" placeholder="Number of Balls">
+    <input type="number" id="rows" placeholder="Rows">
+    <input type="number" id="columns" placeholder="Columns">
+    <button id="bingo-btn">Get Bingo Sheet</button>
+    <div id="bingo" class="card">Click the "Get Bingo Sheet" button</div>
+
+
+    <!-- Ajax call -->
+    <script type="text/python" id="script3">
+        import numpy as np
+        import random
+        from browser import document, ajax
+
+        #Set up general criteria for our board
+        num_balls = document['artist-input']
+        rows= document['rows']
+        columns = document['columns']
+        center_col = round(columns/2)
+        center_row = round(rows/2)
+        low=[]
+        high=[]
+        low.append(1)
+        for i in range(columns-1):
+            low.append((i+1)*num_balls/columns +1)
+            high.append((i+1)*num_balls/columns)
+        high.append(num_balls)
+        for i in range(columns):
+            print("low", i,low[i])
+            print("high",i,high[i])
+            print("diff",high[i]-low[i]+1)
+        
+        def rand_bin(col,prev):
+            dup=True
+            low_edge = low[col]
+            high_edge = high[col]
+            while dup == True:
+                test=random.randrange(low_edge,high_edge)
+                copy=0
+                if len(prev) > 0:
+                    for i in range(len(prev)):
+                        if test == prev[i]:
+                            copy+=1
+                if copy == 0:
+                    dup = False
+            return test
+        bingo_board=np.zeros((rows,columns))
+        for column in range(columns):
+            prev_col=[]
+            for row in range(rows):
+                if row == center_row and column == center_col:
+                    bingo_board[row][column]="0.0"
+                else:
+                    next_entry=rand_bin(column,prev_col)
+                    prev_col.append(next_entry)
+                    bingo_board[row][column]=next_entry
+            prev_col.clear()
+        print("Your Bingo Board")
+        print(bingo_board)
+    </script>
+
+</body>
+</html>
