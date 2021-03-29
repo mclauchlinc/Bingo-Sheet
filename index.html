@@ -68,9 +68,9 @@
 <body onload="brython()">
     <h1>Custom Bingo Sheet</h1>
 
-    <input type="number" id="n_balls" placeholder="Number of Balls">
-    <input type="number" id="rows" placeholder="Rows">
-    <input type="number" id="columns" placeholder="Columns">
+    <input type="number" id="nballs-" placeholder="Number of Balls">
+    <input type="number" id="rows-" placeholder="Rows">
+    <input type="number" id="columns-" placeholder="Columns">
     <button id="bingo-btn">Get Bingo Sheet</button>
     <div id="bingo" class="card">Click the "Get Bingo Sheet" button</div>
 
@@ -80,11 +80,7 @@
         import numpy as np
         import random
         from browser import document, ajax
-
-        document['bingo'].text = 'Loading...'
-
-        
-        
+                
         def rand_bin(col,prev):
             dup=True
             low_edge = low[col]
@@ -100,12 +96,12 @@
                     dup = False
             return test
 
-        def get_board():
+        def get_board(ev):
             req= ajax.ajax()
             document['bingo'].text = 'Loading...'
-            num_balls = document['n_balls']
-            rows= document['rows']
-            columns = document['columns']
+            num_balls = document['nballs-']
+            rows= document['rows-']
+            columns = document['columns-']
             center_col = round(columns/2)
             center_row = round(rows/2)
             low=[]
@@ -128,7 +124,19 @@
                         bingo_board[row][column]=next_entry
                 prev_col.clear()
             print("Your Bingo Board")
-            document['bingo'].text = bingo_board
+            output_board="Your Bingo Board\n"
+            for i in range(rows):
+                output_board+="[ "
+                for j in range(columns):
+                    if bingo_board[i][j]==0.0:
+                        output_board+="FREE"
+                    else:
+                        output_board+=str(bingo_board[i][j])
+                    if j < (columns-1):
+                        output_board+=" , "
+                    else:
+                        output_board+=" ]\n"
+            document['bingo'].text = output_board
 
         document['bingo-btn'].bind('click',get_board)
     </script>
