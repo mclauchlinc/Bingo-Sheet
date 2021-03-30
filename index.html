@@ -79,7 +79,8 @@
     <script type="text/python" id="script3">
         import numpy as np
         import random
-        from browser import document, ajax
+        from browser import document
+        from browser import html
                 
         def rand_bin(col,prev):
             dup=True
@@ -97,7 +98,6 @@
             return test
 
         def get_board(e):
-            req= ajax.ajax()
             document['bingo'].text = 'Loading...'
             num_balls = document['nballs-']
             rows= document['rows-']
